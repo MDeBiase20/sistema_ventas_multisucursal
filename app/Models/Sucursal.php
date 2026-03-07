@@ -28,4 +28,19 @@ class Sucursal extends Model
     {
         return $this->belongsTo(Empresa::class);
     }
+
+    public function productos()
+    {
+        return $this->hasMany(Producto::class);
+    }
+
+    public function cajas()
+    {
+        return $this->hasMany(Caja::class);
+    }
+
+    public function movimientoCajas()
+    {
+        return $this->hasMany(movimiento_caja::class);
+    }
 }

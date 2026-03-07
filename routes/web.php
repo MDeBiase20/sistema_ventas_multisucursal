@@ -54,3 +54,37 @@ Route::post('/proveedores/create', [App\Http\Controllers\ProveedorController::cl
 Route::get('/proveedores/edit/{proveedor}', [App\Http\Controllers\ProveedorController::class, 'edit'])->name('admin.proveedores.edit')->middleware('auth');
 Route::put('/proveedores/{proveedor}', [App\Http\Controllers\ProveedorController::class, 'update'])->name('admin.proveedores.update')->middleware('auth');
 Route::delete('/proveedores/{id}', [App\Http\Controllers\ProveedorController::class, 'destroy'])->name('admin.proveedores.destroy')->middleware('auth');
+
+//Rutas para los productos
+Route::get('/productos', [App\Http\Controllers\ProductoController::class, 'index'])->name('admin.productos.index')->middleware('auth');
+Route::get('/productos/create', [App\Http\Controllers\ProductoController::class, 'create'])->name('admin.productos.create')->middleware('auth');
+Route::post('/productos/create', [App\Http\Controllers\ProductoController::class, 'store'])->name('admin.productos.store')->middleware('auth');
+Route::get('/productos/{producto}', [App\Http\Controllers\ProductoController::class, 'show'])->name('admin.productos.show')->middleware('auth');
+Route::get('/productos/edit/{producto}', [App\Http\Controllers\ProductoController::class, 'edit'])->name('admin.productos.edit')->middleware('auth');
+Route::put('/productos/{producto}', [App\Http\Controllers\ProductoController::class, 'update'])->name('admin.productos.update')->middleware('auth');
+Route::delete('/productos/{id}', [App\Http\Controllers\ProductoController::class, 'destroy'])->name('admin.productos.destroy')->middleware('auth');
+
+//Ruta para los clientes
+Route::get('/clientes', [App\Http\Controllers\ClienteController::class, 'index'])->name('admin.clientes.index')->middleware('auth');
+Route::get('/clientes/create', [App\Http\Controllers\ClienteController::class, 'create'])->name('admin.clientes.create')->middleware('auth');
+Route::post('/clientes/create', [App\Http\Controllers\ClienteController::class, 'store'])->name('admin.clientes.store')->middleware('auth');
+// Route::get('/clientes/{cliente}', [App\Http\Controllers\ClienteController::class, 'show'])->name('admin.clientes.show')->middleware('auth');
+Route::get('/clientes/edit/{cliente}', [App\Http\Controllers\ClienteController::class, 'edit'])->name('admin.clientes.edit')->middleware('auth');
+Route::put('/clientes/{cliente}', [App\Http\Controllers\ClienteController::class, 'update'])->name('admin.clientes.update')->middleware('auth');
+Route::delete('/clientes/{id}', [App\Http\Controllers\ClienteController::class, 'destroy'])->name('admin.clientes.destroy')->middleware('auth');
+
+//Ruta para las cajas
+Route::get('/cajas', [App\Http\Controllers\CajaController::class, 'index'])->name('admin.cajas.index')->middleware('auth');
+Route::get('/cajas/create', [App\Http\Controllers\CajaController::class, 'create'])->name('admin.cajas.create')->middleware('auth');
+Route::post('/cajas/create', [App\Http\Controllers\CajaController::class, 'store'])->name('admin.cajas.store')->middleware('auth');
+Route::get('/cajas/{caja}', [App\Http\Controllers\CajaController::class, 'show'])->name('admin.cajas.show')->middleware('auth');
+Route::get('/cajas/edit/{caja}', [App\Http\Controllers\CajaController::class,'edit'])->name('admin.cajas.edit')->middleware('auth');
+Route::put('/cajas/{caja}', [App\Http\Controllers\CajaController::class, 'update'])->name('admin.cajas.update')->middleware('auth');
+Route::delete('/cajas/{id}', [App\Http\Controllers\CajaController::class, 'destroy'])->name('admin.cajas.destroy')->middleware('auth');
+
+Route::get('/cajas/{caja}/ingresos-egresos', [App\Http\Controllers\MovimientoCajaController::class, 'ingresosEgresos'])->name('admin.cajas.ingresos-egresos')->middleware('auth');
+Route::post('/cajas/{caja}/movimientos', [App\Http\Controllers\MovimientoCajaController::class, 'movimientos'])->name('admin.cajas.movimientos')->middleware('auth');
+
+//Ruta para el cierre de caja
+Route::get('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cerrarCaja'])->name('admin.cajas.cerrar')->middleware('auth');
+Route::put('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cierre'])->name('admin.cajas.cierre')->middleware('auth');

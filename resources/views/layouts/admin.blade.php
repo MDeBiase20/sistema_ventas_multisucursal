@@ -117,6 +117,40 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item active">
+                            <a href="{{ route('admin.productos.index') }}" class='sidebar-link'>
+                                <i class="bi bi-box-seam"></i>
+                                <span>Productos</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
+                            <a href="{{ route('admin.clientes.index') }}" class='sidebar-link'>
+                                <i class="bi bi-people"></i>
+                                <span>Clientes</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
+                            <a href="{{ route('admin.cajas.index') }}" class='sidebar-link'>
+                                <i class="bi bi-calculator-fill"></i>
+                                <span>Caja</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
+                            <a href="#" class="sidebar-link" style="background-color: red"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Cerrar Sesión</span>
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+
                         {{-- <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-stack"></i>

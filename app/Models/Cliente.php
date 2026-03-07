@@ -4,24 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Proveedor extends Model
+class Cliente extends Model
 {
     protected $fillable = [
         'nombre',
-        'direccion',
-        'telefono',
+        'apellido',
         'email',
-        'cuit',
+        'telefono',
+        'direccion',
         'empresa_id',
     ];
 
     public function empresa()
     {
         return $this->belongsTo(Empresa::class);
-    }
-
-    public function productos()
-    {
-        return $this->hasMany(Producto::class);
     }
 }

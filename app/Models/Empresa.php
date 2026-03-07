@@ -64,4 +64,24 @@ class Empresa extends Model
     {
         return $this->hasMany(Proveedor::class);
     }
+
+    public function productos()
+    {
+        return $this->hasMany(Producto::class);
+    }
+
+    public function clientes()
+    {
+        return $this->hasMany(Cliente::class);
+    }
+
+    public function cajas()
+    {
+        return $this->hasMany(Caja::class);
+    }
+
+    public function movimientoCajas()
+    {
+        return $this->hasMany(movimiento_caja::class);
+    }
 }
