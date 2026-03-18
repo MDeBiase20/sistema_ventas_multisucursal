@@ -69,31 +69,14 @@
                                         <div class="row">
 
                                             <div class="col-md-4">
-                                                <label for="">Sucursal</label>
-                                                <div class="form-group position-relative has-icon-left">
-                                                    <select class="form-control select2" name="sucursal_id">
-                                                        <option value="" enabled>Seleccionar Sucursal</option>
-                                                        @foreach ($sucursales as $sucursal)
-                                                            <option value="{{ $sucursal->id }}"  {{ $producto->sucursal_id === $sucursal->id ? 'selected' : '' }}>{{ $sucursal->nombre }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('sucursal_id')
-                                                        <small style="color: red">{{ $message }}</small>
-                                                    @enderror
-                                                    <div class="form-control-icon">
-                                                        <i class="bi bi-list"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
                                                 <label for="">Proveedor</label>
                                                 <div class="form-group position-relative has-icon-left">
                                                     <select class="form-control select2" name="proveedor_id">
                                                         <option value="" enabled>Seleccionar Proveedor</option>
                                                         @foreach ($proveedores as $proveedor)
-                                                            <option value="{{ $proveedor->id }}" {{ $producto->proveedor_id === $proveedor->id ? 'selected' : '' }}>{{ $proveedor->nombre }}
+                                                            <option value="{{ $proveedor->id }}"
+                                                                {{ $producto->proveedor_id === $proveedor->id ? 'selected' : '' }}>
+                                                                {{ $proveedor->nombre }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -106,26 +89,8 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4">
-                                                <label for="">Stock</label>
-                                                <div class="form-group position-relative has-icon-left">
-                                                    <input type="number" class="form-control"
-                                                        value="{{ old('stock', $producto->stock ?? '') }}" name="stock"
-                                                        required>
-                                                    @error('stock')
-                                                        <small style="color: red">{{ $message }}</small>
-                                                    @enderror
-                                                    <div class="form-control-icon">
-                                                        <i class="bi bi-archive"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <br>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="col-md-8">
+                                            <div class="col-md-8">
+                                                <div class="col-md-10">
                                                     <label for="">Descripción</label>
                                                     <textarea class="form-control" name="descripcion" rows="6" required>{{ old('descripcion', $producto->descripcion ?? '') }}</textarea>
                                                     @error('descripcion')
@@ -133,8 +98,8 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                        </div>
 
+                                        </div>
                                         <br>
 
                                         <hr>
@@ -142,7 +107,8 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <button type="submit" class="btn btn-success">Actualizar Producto</button>
-                                                <a href="{{ route('admin.productos.index') }}" class="btn btn-secondary">Cancelar</a>
+                                                <a href="{{ route('admin.productos.index') }}"
+                                                    class="btn btn-secondary">Cancelar</a>
                                             </div>
                                         </div>
 

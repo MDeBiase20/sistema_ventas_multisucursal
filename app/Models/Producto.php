@@ -10,9 +10,7 @@ class Producto extends Model
         'nombre',
         'descripcion',
         'precio',
-        'stock',
         'codigo',
-        'sucursal_id',
         'proveedor_id',
         'empresa_id',
     ];
@@ -30,5 +28,9 @@ class Producto extends Model
     public function proveedor()
     {
         return $this->belongsTo(Proveedor::class);
+    }
+
+    public function sucursales(){
+        return $this->hasMany(ProductoSucursal::class);
     }
 }

@@ -139,6 +139,13 @@
                         </li>
 
                         <li class="sidebar-item active">
+                            <a href="{{ route('admin.compras.index') }}" class='sidebar-link'>
+                                <i class="bi bi-cart-check"></i>
+                                <span>Compras</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
                             <a href="#" class="sidebar-link" style="background-color: red"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="bi bi-box-arrow-right"></i>

@@ -20,9 +20,7 @@ class ProductoService
                 'nombre' => $data['nombre'],
                 'descripcion' => $data['descripcion'],
                 'precio' => $data['precio'],
-                'stock' => $data['stock'],
                 'codigo'=> $data['codigo'],
-                'sucursal_id' => $data['sucursal_id'],
                 'proveedor_id' => $data['proveedor_id'],
                 'empresa_id' => Auth::user()->empresa_id,
             ]);
@@ -43,9 +41,7 @@ class ProductoService
             'nombre' => $data['nombre'],
             'descripcion' => $data['descripcion'],
             'precio' => $data['precio'],
-            'stock' => $data['stock'],
             'codigo'=> $data['codigo'],
-            'sucursal_id' => $data['sucursal_id'],
             'proveedor_id' => $data['proveedor_id'],
         ];
 

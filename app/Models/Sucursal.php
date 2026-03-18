@@ -43,4 +43,9 @@ class Sucursal extends Model
     {
         return $this->hasMany(movimiento_caja::class);
     }
+
+    public function productossucursal()
+    {
+        return $this->hasMany(ProductoSucursal::class);
+    }
 }

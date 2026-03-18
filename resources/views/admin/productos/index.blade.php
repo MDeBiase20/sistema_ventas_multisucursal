@@ -22,8 +22,6 @@
                                         <th>#</th>
                                         <th>Nombre</th>
                                         <th>Precio</th>
-                                        <th>Sucursal</th>
-                                        <th>Stock</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -34,8 +32,6 @@
                                             <td>{{ $contador_productos++ }}</td>
                                             <td>{{ $producto->nombre }}</td>
                                             <td>{{ $producto->precio }}</td>
-                                            <td>{{ $producto->sucursal->nombre ?? 'N/A' }}</td>
-                                            <td>{{ $producto->stock }}</td>
                                             <td>
                                                 <a href="{{ route('admin.productos.show', $producto->id) }}" class="btn btn-sm btn-info">Ver</a>
                                                 <a href="{{ route('admin.productos.edit', $producto->id) }}" class="btn btn-sm btn-success">Editar</a>

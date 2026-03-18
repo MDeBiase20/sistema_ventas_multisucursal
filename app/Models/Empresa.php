@@ -84,4 +84,9 @@ class Empresa extends Model
     {
         return $this->hasMany(movimiento_caja::class);
     }
+
+    public function compras()
+    {
+        return $this->hasMany(Compra::class);
+    }
 }

@@ -11,19 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('productos', function (Blueprint $table) {
+        Schema::create('compras', function (Blueprint $table) {
             $table->id();
 
-            $table->string('nombre');
-            $table->text('descripcion');
-            $table->decimal('precio', 8, 2);
-            $table->string('codigo')->unique();
-
-            $table->unsignedBigInteger('empresa_id');
-            $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+            $table->string('numero_compra')->unique();
+            $table->date('fecha_compra');
+            $table->decimal('total_compra', 8, 2);
 
             $table->unsignedBigInteger('proveedor_id');
             $table->foreign('proveedor_id')->references('id')->on('proveedors')->onDelete('cascade');
+
+            $table->unsignedBigInteger('sucursal_id');
+            $table->foreign('sucursal_id')->references('id')->on('sucursals')->onDelete('cascade');
+
+            $table->unsignedBigInteger('empresa_id');
+            $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -34,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('productos');
+        Schema::dropIfExists('compras');
     }
 };

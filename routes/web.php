@@ -88,3 +88,16 @@ Route::post('/cajas/{caja}/movimientos', [App\Http\Controllers\MovimientoCajaCon
 //Ruta para el cierre de caja
 Route::get('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cerrarCaja'])->name('admin.cajas.cerrar')->middleware('auth');
 Route::put('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cierre'])->name('admin.cajas.cierre')->middleware('auth');
+
+//Ruta para las compras temporales
+Route::post('/compras-temporales', [App\Http\Controllers\TmpComprasController::class, 'store'])->name('admin.compras-temporales.store')->middleware('auth');
+Route::delete('/compras-temporales/{id}', [App\Http\Controllers\TmpComprasController::class, 'destroy'])->name('admin.compras-temporales.destroy')->middleware('auth');
+
+//Ruta para las compras
+Route::get('/compras', [App\Http\Controllers\CompraController::class, 'index'])->name('admin.compras.index')->middleware('auth');
+Route::get('/compras/create', [App\Http\Controllers\CompraController::class, 'create'])->name('admin.compras.create')->middleware('auth');
+Route::post('/compras/create', [App\Http\Controllers\CompraController::class, 'store'])->name('admin.compras.store')->middleware('auth');
+Route::get('/compras/{compra}', [App\Http\Controllers\CompraController::class, 'show'])->name('admin.compras.show')->middleware('auth');
+Route::get('/compras/edit/{compra}', [App\Http\Controllers\CompraController::class, 'edit'])->name('admin.compras.edit')->middleware('auth');
+Route::put('/compras/{compra}', [App\Http\Controllers\CompraController::class, 'update'])->name('admin.compras.update')->middleware('auth');
+Route::put('/compras/{compra}',[App\Http\Controllers\CompraController::class, 'anular'])->name('admin.compras.anular')->middleware('auth');
