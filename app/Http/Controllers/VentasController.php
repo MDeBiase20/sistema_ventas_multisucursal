@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductoSucursal;
-use App\Models\Sucursal;
+use App\Models\Ventas;
 use Illuminate\Http\Request;
 
-class ProductoSucursalController extends Controller
+class VentasController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $sucursales = $request->sucursal_id;
-        $productos_sucursales = ProductoSucursal::with('sucursal')->get();            
-
-        $sucursales = Sucursal::all();    
-        return view('admin.productos_sucursales.index', compact('productos_sucursales', 'sucursales'));
+        //
     }
 
     /**
@@ -39,7 +34,7 @@ class ProductoSucursalController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProductoSucursal $productoSucursal)
+    public function show(Ventas $ventas)
     {
         //
     }
@@ -47,7 +42,7 @@ class ProductoSucursalController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductoSucursal $productoSucursal)
+    public function edit(Ventas $ventas)
     {
         //
     }
@@ -55,7 +50,7 @@ class ProductoSucursalController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductoSucursal $productoSucursal)
+    public function update(Request $request, Ventas $ventas)
     {
         //
     }
@@ -63,7 +58,7 @@ class ProductoSucursalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductoSucursal $productoSucursal)
+    public function destroy(Ventas $ventas)
     {
         //
     }

@@ -64,6 +64,9 @@ Route::get('/productos/edit/{producto}', [App\Http\Controllers\ProductoControlle
 Route::put('/productos/{producto}', [App\Http\Controllers\ProductoController::class, 'update'])->name('admin.productos.update')->middleware('auth');
 Route::delete('/productos/{id}', [App\Http\Controllers\ProductoController::class, 'destroy'])->name('admin.productos.destroy')->middleware('auth');
 
+//Rutas para los productos por sucursal
+Route::get('/productos-sucursal', [App\Http\Controllers\ProductoSucursalController::class, 'index'])->name('admin.productos_sucursales.index')->middleware('auth');
+
 //Ruta para los clientes
 Route::get('/clientes', [App\Http\Controllers\ClienteController::class, 'index'])->name('admin.clientes.index')->middleware('auth');
 Route::get('/clientes/create', [App\Http\Controllers\ClienteController::class, 'create'])->name('admin.clientes.create')->middleware('auth');
@@ -101,3 +104,16 @@ Route::get('/compras/{compra}', [App\Http\Controllers\CompraController::class, '
 Route::get('/compras/edit/{compra}', [App\Http\Controllers\CompraController::class, 'edit'])->name('admin.compras.edit')->middleware('auth');
 Route::put('/compras/{compra}', [App\Http\Controllers\CompraController::class, 'update'])->name('admin.compras.update')->middleware('auth');
 Route::put('/compras/{compra}',[App\Http\Controllers\CompraController::class, 'anular'])->name('admin.compras.anular')->middleware('auth');
+
+//Ruta para las ventas temporales
+Route::post('/ventas-temporales', [App\Http\Controllers\TmpVentasController::class, 'store'])->name('admin.ventas-temporales.store')->middleware('auth');
+Route::delete('/ventas-temporales/{id}', [App\Http\Controllers\TmpVentasController::class, 'destroy'])->name('admin.ventas-temporales.destroy')->middleware('auth');
+
+//Rutas para las ventas
+Route::get('/ventas', [App\Http\Controllers\VentaController::class, 'index'])->name('admin.ventas.index')->middleware('auth');
+Route::get('/ventas/create', [App\Http\Controllers\VentaController::class, 'create'])->name('admin.ventas.create')->middleware('auth');
+Route::post('/ventas/create', [App\Http\Controllers\VentaController::class, 'store'])->name('admin.ventas.store')->middleware('auth');
+Route::get('/ventas/{venta}', [App\Http\Controllers\VentaController::class, 'show'])->name('admin.ventas.show')->middleware('auth');
+Route::get('/ventas/edit/{venta}', [App\Http\Controllers\VentaController::class, 'edit'])->name('admin.ventas.edit')->middleware('auth');
+Route::put('/ventas/{venta}', [App\Http\Controllers\VentaController::class, 'update'])->name('admin.ventas.update')->middleware('auth');
+Route::put('/ventas/{venta}', [App\Http\Controllers\VentaController::class, 'anular'])->name('admin.ventas.anular')->middleware('auth');

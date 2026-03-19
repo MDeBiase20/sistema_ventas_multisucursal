@@ -42,7 +42,7 @@ class SucursalController extends Controller
         // dd($request->usuarios);
 
         try {
-            $sucursal = $this->sucursalService->CrearSucursal($request->all());
+            $sucursal = $this->sucursalService->CrearSucursal($request->validated());
 
             return redirect()->route('admin.sucursales.index')->with('success', 'Sucursal creada exitosamente.');
         } catch (\Exception $e) {

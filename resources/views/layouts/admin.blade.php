@@ -125,6 +125,13 @@
                         </li>
 
                         <li class="sidebar-item active">
+                            <a href="{{ route('admin.productos_sucursales.index') }}" class='sidebar-link'>
+                                <i class="bi bi-box-seam"></i>
+                                <span>Productos por sucursal</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
                             <a href="{{ route('admin.clientes.index') }}" class='sidebar-link'>
                                 <i class="bi bi-people"></i>
                                 <span>Clientes</span>
@@ -142,6 +149,13 @@
                             <a href="{{ route('admin.compras.index') }}" class='sidebar-link'>
                                 <i class="bi bi-cart-check"></i>
                                 <span>Compras</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
+                            <a href="{{ route('admin.ventas.index') }}" class='sidebar-link'>
+                                <i class="bi bi-basket"></i>
+                                <span>Ventas</span>
                             </a>
                         </li>
 

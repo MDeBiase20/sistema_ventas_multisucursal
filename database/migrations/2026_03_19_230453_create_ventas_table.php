@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('movimiento_cajas', function (Blueprint $table) {
+        Schema::create('ventas', function (Blueprint $table) {
             $table->id();
 
-            $table->string('tipo'); // ingreso o egreso
-            $table->decimal('monto', 15, 2);
-            $table->text('descripcion');
+            $table->string('numero_venta')->unique();
+            $table->date('fecha_venta');
+            $table->decimal('total_venta', 8, 2);
+
+            $table->unsignedBigInteger('cliente_id')->nullable();
+            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
 
             $table->unsignedBigInteger('sucursal_id');
             $table->foreign('sucursal_id')->references('id')->on('sucursals')->onDelete('cascade');
@@ -24,14 +27,10 @@ return new class extends Migration
             $table->unsignedBigInteger('empresa_id');
             $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
 
-            $table->unsignedBigInteger('caja_id');
-            $table->foreign('caja_id')->references('id')->on('cajas')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->unsignedBigInteger('venta_id')->nullable();
-            $table->foreign('venta_id')->references('id')->on('ventas')->onDelete('cascade');
-
-            $table->unsignedBigInteger('compra_id')->nullable();
-            $table->foreign('compra_id')->references('id')->on('compras')->onDelete('cascade');
+            $table->string('estado'); // Nuevo campo para el estado de la venta
 
             $table->timestamps();
         });
@@ -42,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('movimiento_cajas');
+        Schema::dropIfExists('ventas');
     }
 };

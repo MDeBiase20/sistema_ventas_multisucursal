@@ -27,15 +27,9 @@ class DetalleCompraService
                     'sucursal_id' => $data['sucursal_id'],
                 ],
                 [
-                    'stock' => DB::raw('stock + '.$data['cantidad']),
+                    'stock' => DB::raw('COALESCE(stock,0) + '.$data['cantidad']),
                 ]
             );
-
-                ProductoSucursal::create([
-                    'producto_id' => $data['producto_id'],
-                    'sucursal_id' => $data['sucursal_id'],
-                    'stock' => $data['cantidad'],
-                ]);
 
             return $detalleCompra;
         });
