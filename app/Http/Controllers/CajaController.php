@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CierreCajaRequest;
 use App\Http\Requests\StoreCajaRequest;
 use App\Http\Requests\UpdateCajaRequest;
-use App\Http\Requests\CierreCajaRequest;
 use App\Models\Caja;
 use App\Models\Sucursal;
-use Illuminate\Http\Request;
+use App\Models\MovimientoCaja;
 use App\Services\CajaService;
 use App\Services\MovimientoCajaService;
+use Illuminate\Support\Facades\Auth;
 
 class CajaController extends Controller
 {
@@ -19,9 +20,32 @@ class CajaController extends Controller
         $this->movimientoCajaService = $movimientoCajaService;
     }
 
+    private function getSucursalId()
+    {
+        $sucursal_id = session('sucursal_id');
+
+        if (! $sucursal_id) {
+            $sucursal = Sucursal::whereHas('usuarios', function ($q) {
+                $q->where('usuario_id', Auth::id());
+            })->first();
+
+            if (! $sucursal) {
+                throw new \Exception('El usuario no tiene sucursal asignada');
+            }
+
+            $sucursal_id = $sucursal->id;
+            session(['sucursal_id' => $sucursal_id]);
+        }
+
+        return $sucursal_id;
+    }
+
     public function index()
     {
-        $cajas = Caja::all();
+        $sucursal_id = $this->getSucursalId();
+        $cajas = Caja::where('sucursal_id', $sucursal_id)
+            ->where('empresa_id', Auth::user()->empresa_id)
+            ->get();
 
         return view('admin.cajas.index', compact('cajas'));
     }
@@ -46,8 +70,9 @@ class CajaController extends Controller
 
             return redirect()->route('admin.cajas.index')->with('success', 'Caja creada exitosamente.');
         } catch (\Exception $e) {
-            // dd($e->getMessage());
-            return back()->withErrors(['error' => 'Error al crear la caja: ' . $e->getMessage()]);
+            dd($e->getMessage());
+
+            return back()->withErrors(['error' => 'Error al crear la caja: '.$e->getMessage()]);
         }
     }
 
@@ -86,7 +111,7 @@ class CajaController extends Controller
             return redirect()->route('admin.cajas.index')->with('success', 'Caja actualizada exitosamente.');
         } catch (\Exception $e) {
 
-            return back()->withErrors(['error' => 'Error al actualizar la caja: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Error al actualizar la caja: '.$e->getMessage()]);
         }
     }
 
@@ -100,15 +125,28 @@ class CajaController extends Controller
 
             return redirect()->route('admin.cajas.index')->with('success', 'Caja eliminada exitosamente.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Error al eliminar la caja: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Error al eliminar la caja: '.$e->getMessage()]);
         }
     }
 
     public function cerrarCaja(Caja $caja)
     {
+        $ingresos = MovimientoCaja::where('caja_id', $caja->id)
+            ->where('tipo', 'ingreso')
+            ->where('tipo_operacion', 'venta')
+            ->sum('monto');
+
+        $egresos = MovimientoCaja::where('caja_id', $caja->id)
+            ->where('tipo', 'egreso')
+            ->where('tipo_operacion', 'compra')
+            ->sum('monto');
+
+        $monto_teorico = $caja->monto_inicial + $ingresos - $egresos;
+
         $sucursales = Sucursal::where('empresa_id', auth()->user()->empresa_id)->get();
         $caja = $this->cajaService->mostrarCaja($caja);
-        return view('admin.cajas.cierre', compact('caja' , 'sucursales'));
+
+        return view('admin.cajas.cierre', compact('caja', 'sucursales', 'monto_teorico'));
     }
 
     public function cierre(CierreCajaRequest $request, Caja $caja)
@@ -119,13 +157,14 @@ class CajaController extends Controller
             return redirect()->route('admin.cajas.index')->with('success', 'Caja cerrada exitosamente.');
 
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Error al cerrar la caja: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Error al cerrar la caja: '.$e->getMessage()]);
         }
     }
 
     public function ingresosEgresos(Caja $caja)
     {
         $caja = $this->cajaService->mostrarCaja($caja);
+
         return view('admin.cajas.ingreso-egreso', compact('caja'));
     }
 }

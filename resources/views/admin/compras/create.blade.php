@@ -135,8 +135,6 @@
                                                         <th>Código</th>
                                                         <th>Cántidad</th>
                                                         <th>Nombre</th>
-                                                        <th>Costo</th>
-                                                        <th>Total</th>
                                                         <th>Acción</th>
                                                     </tr>
                                                 </thead>
@@ -144,7 +142,7 @@
                                                 <tbody>
                                                     <?php $contador = 1;
                                                     $total_cantidad = 0;
-                                                    $total_compra = 0; ?>
+                                                    ?>
 
                                                     @foreach ($tmp_compras as $tmp_compra)
                                                         <tr>
@@ -155,11 +153,7 @@
                                                             </td>
                                                             <td style="text-align: center">
                                                                 {{ $tmp_compra->producto->nombre }}</td>
-                                                            <td style="text-align: center">
-                                                                {{ $tmp_compra->producto->precio }}</td>
-                                                            <td style="text-align: center">
-                                                                {{ $total = $tmp_compra->producto->precio * $tmp_compra->cantidad }}
-                                                            </td>
+                                                        
                                                             <td style="text-align: center">
                                                                 <button type="button"
                                                                     class="btn btn-danger btn-sm delete-btn"
@@ -169,21 +163,18 @@
                                                         </tr>
                                                         @php
                                                             $total_cantidad += $tmp_compra->cantidad;
-                                                            $total_compra += $total;
+                                                            
                                                         @endphp
                                                     @endforeach
                                                 </tbody>
 
                                                 <tfoot>
                                                     <tr>
-                                                        <td style="text-align: right" colspan="2"><b>Total cántidad</b>
-                                                        </td>
+                                                        <td style="text-align: right" colspan="2"><b>Total cántidad</b></td>
+                                                        
                                                         <td style="text-align: center"><b>{{ $total_cantidad }}</b></td>
 
-                                                        <td style="text-align: right" colspan="2"><b>Precio Total</b>
-                                                        </td>
-                                                        <td style="text-align: center"><b>{{ $total_compra }}</b></td>
-                                                        <td colspan="1"></td>
+                                                        <td colspan="2"></td>
                                                     </tr>
                                                 </tfoot>
 
@@ -307,13 +298,14 @@
                                                 <div class="form-group">
                                                     <label for="precio_total">Sucursal</label>
                                                     <div class="form-group position-relative has-icon-left">
-                                                        <select class="form-control select2" name="sucursal_id">
-                                                            <option value="" enabled>Seleccionar Sucursal</option>
+                                                        <select id="sucursal_select" class="form-control" disabled>
                                                             @foreach ($sucursales as $sucursal)
-                                                                <option value="{{ $sucursal->id }}">{{ $sucursal->nombre }}
+                                                                <option value="{{ $sucursal->id }}"
+                                                                    {{ session('sucursal_id') == $sucursal->id ? 'selected' : '' }}>
+                                                                    {{ $sucursal->nombre }}
                                                                 </option>
                                                             @endforeach
-                                                        </select>
+                                                        </select readonly>
                                                     @error('sucursal_id')
                                                         <small style="color: red">{{ $message }}</small>
                                                     @enderror
@@ -332,8 +324,8 @@
                                                     <label for="precio_total">Costo Total</label>
                                                     <input type="text"
                                                         style="text-align: center; color:rgb(0, 0, 0); background-color:bisque"
-                                                        name="precio_total" value="{{ $total_compra }}"
-                                                        class="form-control" readonly>
+                                                        name="precio_total" 
+                                                        class="form-control">
                                                     @error('precio_total')
                                                         <small style="color:red;"> {{ $message }} </small>
                                                     @enderror

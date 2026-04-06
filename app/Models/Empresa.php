@@ -89,4 +89,9 @@ class Empresa extends Model
     {
         return $this->hasMany(Compra::class);
     }
+
+    public function ventas()
+    {
+        return $this->hasMany(Ventas::class);
+    }
 }

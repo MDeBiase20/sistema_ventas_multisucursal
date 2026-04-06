@@ -26,7 +26,7 @@ class StoreCompraRequest extends FormRequest
             'comprobante' => 'required|string|max:255',
             'fecha_compra' => 'required|date',
             'proveedor_id' => 'required|exists:proveedors,id',
-            'sucursal_id' => 'required|exists:sucursals,id',
+            'precio_total' => 'required|numeric|min:0',
         ];
     }
 
@@ -40,8 +40,9 @@ class StoreCompraRequest extends FormRequest
             'fecha_compra.date' => 'La fecha de compra debe ser una fecha válida.',
             'proveedor_id.required' => 'El proveedor es obligatorio.',
             'proveedor_id.exists' => 'El proveedor seleccionado no existe.',
-            'sucursal_id.required' => 'La sucursal es obligatoria.',
-            'sucursal_id.exists' => 'La sucursal seleccionada no existe.',
+            'precio_total.required' => 'El precio total es obligatorio.',
+            'precio_total.numeric' => 'El precio total debe ser un número.',
+            'precio_total.min' => 'El precio total no puede ser negativo.',
         ];
     }
 }

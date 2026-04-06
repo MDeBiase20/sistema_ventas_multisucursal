@@ -96,7 +96,7 @@
                                             <label for="">Monto final</label>
                                             <div class="form-group position-relative has-icon-left">
                                                 <input type="text" class="form-control"
-                                                    value="{{ old('monto_final', $caja->monto_final ?? '') }}"
+                                                    value="{{ old('monto_final', $caja->monto_cierre_real ?? '') }}"
                                                     name="monto_final" disabled>
                                                 @error('monto_final')
                                                     <small style="color: red">{{ $message }}</small>

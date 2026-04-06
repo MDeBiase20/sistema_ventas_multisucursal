@@ -17,7 +17,16 @@ return new class extends Migration
             $table->dateTime('fecha_apertura');
             $table->dateTime('fecha_cierre')->nullable();
             $table->decimal('monto_inicial', 15, 2);
-            $table->decimal('monto_final', 15, 2)->nullable();
+
+            $table->decimal('monto_cierre_teorico', 15, 2)->nullable();
+            $table->decimal('monto_cierre_real', 15, 2)->nullable();
+            $table->decimal('diferencia', 15, 2)->nullable();
+
+            $table->enum('estado', ['abierta', 'cerrada'])->default('abierta');
+
+            $table->decimal('monto_efectivo', 15, 2)->nullable();
+            $table->decimal('monto_transferencia', 15, 2)->nullable();
+            $table->decimal('monto_otros', 15, 2)->nullable();
 
             $table->unsignedBigInteger('sucursal_id');
             $table->foreign('sucursal_id')->references('id')->on('sucursals')->onDelete('cascade');
@@ -25,6 +34,8 @@ return new class extends Migration
             $table->unsignedBigInteger('empresa_id');
             $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
 
+            $table->unsignedBigInteger('usuario_id');
+            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });

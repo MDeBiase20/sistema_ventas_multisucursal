@@ -11,7 +11,7 @@ class UpdateVentaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class UpdateVentaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'cliente_id' => 'nullable|exists:clientes,id',
+            'fecha_venta' => 'required|date',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'cliente_id.exists' => 'El cliente seleccionado no existe.',
+            'fecha_venta.required' => 'La fecha de venta es obligatoria.',
+            'fecha_venta.date' => 'La fecha de venta debe ser una fecha válida.',
         ];
     }
 }

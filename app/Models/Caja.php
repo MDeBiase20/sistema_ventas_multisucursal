@@ -9,11 +9,18 @@ class Caja extends Model
     protected $fillable = [
         'nombre',
         'monto_inicial',
-        'monto_final',
+        'monto_cierre_teorico',
+        'monto_cierre_real',
+        'diferencia',
+        'monto_efectivo',
+        'monto_transferencia',
+        'monto_otros',
+        'estado',
         'fecha_apertura',
         'fecha_cierre',
         'sucursal_id',
         'empresa_id',
+        'usuario_id'
     ];
 
     public function sucursal()

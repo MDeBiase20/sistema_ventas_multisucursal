@@ -97,6 +97,13 @@
                         </li>
 
                         <li class="sidebar-item active">
+                            <a href="{{ route('admin.permisos.index') }}" class='sidebar-link'>
+                                <i class="bi bi-card-checklist"></i>
+                                <span>Permisos</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item active">
                             <a href="{{ route('admin.usuarios.index') }}" class='sidebar-link'>
                                 <i class="bi bi-people"></i>
                                 <span>Usuarios</span>
@@ -784,11 +791,11 @@
             </header>
 
             <div class="page-heading">
-                <h3>Menú principal</h3>
+                <h3></h3>
             </div>
             <div class="page-content">
                 {{-- Este yield voy a extender en todas las vistas para
-    poder insertar contenido  --}}
+                poder insertar contenido  --}}
                 @yield('content')
             </div>
 

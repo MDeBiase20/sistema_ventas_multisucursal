@@ -26,6 +26,7 @@ class MovimientoCajaService
 
             return MovimientoCaja::create([
                 'tipo' => $data['tipo_movimiento'],
+                'tipo_operacion' =>'S/N',
                 'monto' => $data['monto'],
                 'descripcion' => $data['descripcion'],
                 'sucursal_id' => $caja->sucursal_id,

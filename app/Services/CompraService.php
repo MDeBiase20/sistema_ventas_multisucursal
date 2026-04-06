@@ -3,9 +3,12 @@
 namespace App\Services;
 
 use App\Models\Compra;
+use App\Models\MovimientoCaja;
 use App\Models\Producto;
-use App\Models\TmpCompra;
 use App\Models\ProductoSucursal;
+use App\Models\TmpCompra;
+use App\Models\Sucursal;
+use App\Models\Caja;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -20,27 +23,38 @@ class CompraService
     {
         return DB::transaction(function () use ($data) {
 
+            $sucursal_id = session('sucursal_id');
+
+            if (! $sucursal_id) {
+                throw new \Exception('No hay sucursal activa');
+            }
+
             $tmpCompras = TmpCompra::where('session_id', session()->getId())->get();
 
             if ($tmpCompras->isEmpty()) {
                 throw new \Exception('No hay productos en el carrito de compras.');
             }
 
+            // 🔒 BLOQUEAR la sucursal para evitar duplicados
+            $sucursal = Sucursal::where('id', $sucursal_id)->lockForUpdate()->first();
+
+            $caja = Caja::where('sucursal_id', $sucursal_id)
+                        ->first();
+
+            if (!$caja) {
+                throw new \Exception('No hay una caja abierta en esta sucursal');
+            }
+
             // calcular total
             $total = 0;
-
-            foreach ($tmpCompras as $tmp) {
-                $producto = Producto::find($tmp->producto_id);
-                $total += $producto->precio * $tmp->cantidad;
-            }
 
             // crear compra
             $compra = Compra::create([
                 'numero_compra' => $data['comprobante'],
                 'fecha_compra' => $data['fecha_compra'],
-                'total_compra' => $total,
+                'total_compra' => $data['precio_total'],
                 'proveedor_id' => $data['proveedor_id'],
-                'sucursal_id' => $data['sucursal_id'],
+                'sucursal_id' => $sucursal_id,
                 'empresa_id' => Auth::user()->empresa_id,
                 'usuario_id' => Auth::id(),
             ]);
@@ -52,11 +66,23 @@ class CompraService
                     'compra_id' => $compra->id,
                     'producto_id' => $tmp->producto_id,
                     'cantidad' => $tmp->cantidad,
-                    'sucursal_id' => $data['sucursal_id'],
+                    'sucursal_id' => $sucursal_id,
                 ]);
 
                 $tmp->delete();
             }
+
+            // Registrar movimiento de caja
+            MovimientoCaja::create([
+                'tipo' => 'egreso',
+                'tipo_operacion' => 'compra',
+                'monto' => $data['precio_total'],
+                'descripcion' => 'Compra #'.$compra->numero_compra,
+                'sucursal_id' => $sucursal_id,
+                'empresa_id' => Auth::user()->empresa_id,
+                'caja_id' => $caja->id,
+                'compra_id' => $compra->id,
+            ]);
 
             return $compra;
         });
@@ -65,11 +91,11 @@ class CompraService
     public function mostrarCompra(Compra $compra)
     {
         return $compra->load([
-        'proveedor',
-        'sucursal',
-        'empresa',
-        'detalles.producto'
-    ]);
+            'proveedor',
+            'sucursal',
+            'empresa',
+            'detalles.producto',
+        ]);
 
     }
 
@@ -90,12 +116,28 @@ class CompraService
     public function AnularCompra(Compra $compra): void
     {
         DB::transaction(function () use ($compra) {
-            //evitamos anular compras que ya han sido anuladas
+
+        //Verificamos que la compra sea de esa sucursal para evitar problemas de seguridad
+            $sucursal_id = session('sucursal_id');
+
+            if (! $sucursal_id) {
+                throw new \Exception('No hay sucursal activa');
+            }
+
+            // evitamos anular compras que ya han sido anuladas
             if ($compra->estado === 'anulada') {
                 throw new \Exception('La compra ya ha sido anulada.');
             }
 
-            //Cargamos los detalles de la compra para revertir el stock
+            // Obtenemos la caja de la sucursal para registrar el movimiento inverso
+            $caja = Caja::where('sucursal_id', $sucursal_id)
+                ->first();
+
+            if (! $caja) {
+                throw new \Exception('No hay una caja abierta en esta sucursal');
+            }
+
+            // Cargamos los detalles de la compra para revertir el stock
             $compra->load('detalles');
 
             foreach ($compra->detalles as $detalle) {
@@ -106,17 +148,27 @@ class CompraService
                 if ($productoSucursal) {
                     // Revertir el stock restando la cantidad de la compra anulada
                     $productoSucursal->stock -= $detalle->cantidad;
-                    if($productoSucursal->stock < 0){
-                        throw new \Exception('Stock inconsistente al anular.'); // Evitar stock negativo
+                    if ($productoSucursal->stock < 0) {
+                        throw new \Exception('No se puede anular la compra porque ya hay ventas asociadas a ese producto.'); // Evitar stock negativo
                     }
-                        
+
                     $productoSucursal->save();
                 }
             }
 
-            //Marcamos como anulada la compra
+            // Marcamos como anulada la compra
             $compra->update([
                 'estado' => 'anulada',
+            ]);
+
+            MovimientoCaja::create([
+                'tipo' => 'ingreso', // inverso de la compra
+                'tipo_operacion' => 'anulación_compra',
+                'monto' => $compra->total_compra,
+                'descripcion' => 'Anulación compra #'.$compra->numero_compra,
+                'sucursal_id' => $sucursal_id,
+                'empresa_id' => $compra->empresa_id,
+                'caja_id' => $caja->id,
             ]);
 
             return $compra;

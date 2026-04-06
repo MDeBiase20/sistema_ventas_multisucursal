@@ -11,9 +11,16 @@
             <div class="card">
                 <div class="card-content">
                     <div class="card-header">
-                        <div style="text-align: right">
-                            <a href="{{ route('admin.compras.create') }}" class="btn btn-primary">Crear Compra</a>
-                        </div>
+                        @if ($cajaAbierta)
+                            <div style="text-align: right">
+                                <a href="{{ route('admin.compras.create') }}" class="btn btn-primary">Crear Compra</a>
+                            </div>
+                        @else
+                            <div style="text-align: right">
+                                <a href="{{ route('admin.cajas.create') }}" class="btn btn-danger">Crear Caja</a>
+                            </div>    
+                        @endif
+
                         <hr>
                         <div class="card-body">
                             <table class="table table-striped" id="compras-table">
@@ -38,7 +45,7 @@
                                             <td>{{ $compra->sucursal->nombre ?? 'N/A' }}</td>
                                             <td>{{ $compra->total_compra ?? 'N/A' }}</td>
                                             <td>
-                                                @if($compra->estado === 'activa')
+                                                @if ($compra->estado === 'activa')
                                                     <span class="badge bg-success">Activa</span>
                                                 @elseif($compra->estado === 'anulada')
                                                     <span class="badge bg-danger">Anulada</span>
@@ -47,36 +54,40 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('admin.compras.show', $compra->id) }}" class="btn btn-sm btn-info">Ver</a>
-                                                <a href="{{ route('admin.compras.edit', $compra->id) }}" class="btn btn-sm btn-success">Editar</a>
-                                                    @if($compra->estado === 'activa')
-                                                        <form action="{{ route('admin.compras.anular', $compra->id) }}" method="POST" style="display:inline;" id="miFormulario{{ $compra->id }}">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <button type="submit" class="btn btn-sm btn-danger" onclick="preguntar{{ $compra->id }}(event)">Anular</button>
-                                                        </form>
+                                                @if ($compra->estado === 'activa')
+                                                    <a href="{{ route('admin.compras.show', $compra->id) }}"class="btn btn-sm btn-info">Ver</a>
+                                                    <a href="{{ route('admin.compras.edit', $compra->id) }}"class="btn btn-sm btn-success">Editar</a>
+                                                    <form action="{{ route('admin.compras.anular', $compra->id) }}"
+                                                        method="POST" style="display:inline;"
+                                                        id="miFormulario{{ $compra->id }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                            onclick="preguntar{{ $compra->id }}(event)">Anular</button>
+                                                    </form>
 
-                                                        <script>
-                                                            function preguntar{{ $compra->id }} (event){
-                                                                event.preventDefault()
-                                                                Swal.fire({
+                                                    <script>
+                                                        function preguntar{{ $compra->id }}(event) {
+                                                            event.preventDefault()
+                                                            Swal.fire({
                                                                 title: "¿Estás seguro de anular esta compra?",
                                                                 icon: "question",
                                                                 showDenyButton: true,
                                                                 showCancelButton: false,
                                                                 confirmButtonText: "Anular",
                                                                 denyButtonText: `No anular`
-                                                                }).then((result) => {
+                                                            }).then((result) => {
                                                                 /* Read more about isConfirmed, isDenied below */
                                                                 if (result.isConfirmed) {
                                                                     var form = $('#miFormulario{{ $compra->id }}')
                                                                     form.submit()
                                                                 }
-                                                                });
-                                                            }
-                                                            
-                                                        </script>
-                                                    @endif
+                                                            });
+                                                        }
+                                                    </script>
+                                                @else
+                                                <a href="{{ route('admin.compras.show', $compra->id) }}"class="btn btn-sm btn-info">Ver</a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -114,4 +125,4 @@
                     "autoWidth": false,
                 });
             </script>
-@endsection
+        @endsection

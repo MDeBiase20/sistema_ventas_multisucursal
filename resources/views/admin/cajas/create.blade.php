@@ -57,13 +57,14 @@
                                             <div class="col-md-8">
                                                 <label for="">Sucursal</label>
                                                 <div class="form-group position-relative has-icon-left">
-                                                    <select class="form-control select2" name="sucursal_id">
-                                                        <option value="" enabled>Seleccionar Sucursal</option>
-                                                        @foreach ($sucursales as $sucursal)
-                                                            <option value="{{ $sucursal->id }}">{{ $sucursal->nombre }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
+                                                    <select id="sucursal_select" class="form-control" disabled>
+                                                            @foreach ($sucursales as $sucursal)
+                                                                <option value="{{ $sucursal->id }}"
+                                                                    {{ session('sucursal_id') == $sucursal->id ? 'selected' : '' }}>
+                                                                    {{ $sucursal->nombre }}
+                                                                </option>
+                                                            @endforeach
+                                                    </select readonly>
                                                     @error('sucursal_id')
                                                         <small style="color: red">{{ $message }}</small>
                                                     @enderror

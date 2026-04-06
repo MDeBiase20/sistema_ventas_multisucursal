@@ -24,7 +24,6 @@ class StoreCajaRequest extends FormRequest
         return [
             'fecha_apertura' => 'required|date',
             'monto_inicial' => 'required|numeric|min:0',
-            'sucursal_id' => 'required|exists:sucursals,id',
         ];
     }
 
@@ -36,8 +35,6 @@ class StoreCajaRequest extends FormRequest
             'monto_inicial.required' => 'El monto inicial es obligatorio.',
             'monto_inicial.numeric' => 'El monto inicial debe ser un número.',
             'monto_inicial.min' => 'El monto inicial no puede ser negativo.',
-            'sucursal_id.required' => 'La sucursal es obligatoria.',
-            'sucursal_id.exists' => 'La sucursal seleccionada no existe.',
         ];
     }
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('direccion');
             $table->string('telefono');
             $table->string('email')->nullable();
+            $table->integer('numero_venta_actual')->default(0);
 
             $table->unsignedBigInteger('empresa_id');
             $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');

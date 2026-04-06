@@ -25,6 +25,7 @@
                                         <th>Fecha de Cierre</th>
                                         <th>Monto Final</th>
                                         <th>Sucursal</th>
+                                        <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -36,20 +37,28 @@
                                             <td>{{ $caja->fecha_apertura }}</td>
                                             <td>{{ $caja->monto_inicial }}</td>
                                             <td>{{ $caja->fecha_cierre }}</td>
-                                            <td>{{ $caja->monto_final }}</td>
+                                            <td>{{ $caja->monto_cierre_real }}</td>
                                             <td>{{ $caja->sucursal->nombre }}</td>
+                                            @if($caja->estado == 'abierta')
+                                                <td><span class="badge bg-success">{{ $caja->estado }}</span></td>
+                                            @else
+                                                <td><span class="badge bg-danger">{{ $caja->estado }}</span></td>
+                                            @endif
                                             <td>
-                                                <a href="{{ route('admin.cajas.show', $caja->id) }}" class="btn btn-sm btn-info">Ver</a>
-                                                <a href="{{ route('admin.cajas.edit', $caja->id) }}" class="btn btn-sm btn-success">Editar</a>
-                                                <a href="{{ route('admin.cajas.cerrar', $caja->id) }}" class="btn btn-sm btn-warning">Cierre</a>
-                                                <a href="{{ route('admin.cajas.ingresos-egresos', $caja->id) }}" class="btn btn-sm btn-secondary">Ingreso-Egreso</a>
-                                                <form action="{{ route('admin.cajas.destroy', $caja->id) }}" method="POST" style="display:inline;" id="miFormulario{{ $caja->id }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="preguntar{{ $caja->id }}(event)">Eliminar</button>
-                                                </form>
-
-                                                <script>
+                                                @if($caja->estado === 'cerrada')
+                                                    <a href="{{ route('admin.cajas.show', $caja->id) }}" class="btn btn-sm btn-info">Ver</a>
+                                                @else    
+                                                    <a href="{{ route('admin.cajas.edit', $caja->id) }}" class="btn btn-sm btn-success">Editar</a>
+                                                    <a href="{{ route('admin.cajas.cerrar', $caja->id) }}" class="btn btn-sm btn-warning">Cierre</a>
+                                                    <a href="{{ route('admin.cajas.ingresos-egresos', $caja->id) }}" class="btn btn-sm btn-secondary">Ingreso-Egreso</a>
+                                                    <a href="{{ route('admin.cajas.show', $caja->id) }}" class="btn btn-sm btn-info">Ver</a>
+                                                    {{-- <form action="{{ route('admin.cajas.destroy', $caja->id) }}" method="POST" style="display:inline;" id="miFormulario{{ $caja->id }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="preguntar{{ $caja->id }}(event)">Eliminar</button>
+                                                    </form> --}}
+                                                @endif
+                                                {{-- <script>
                                                     function preguntar{{ $caja->id }} (event){
                                                         event.preventDefault()
                                                         Swal.fire({
@@ -68,7 +77,7 @@
                                                         });
                                                     }
                                                     
-                                                </script>
+                                                </script> --}}
 
                                             </td>
                                         </tr>

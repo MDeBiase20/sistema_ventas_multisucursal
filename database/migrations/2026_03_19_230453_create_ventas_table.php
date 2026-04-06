@@ -30,7 +30,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->string('estado'); // Nuevo campo para el estado de la venta
+            $table->string('estado')->default('confirmada'); // Nuevo campo para el estado de la venta
 
             $table->timestamps();
         });

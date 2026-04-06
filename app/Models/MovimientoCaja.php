@@ -8,11 +8,14 @@ class MovimientoCaja extends Model
 {
     protected $fillable = [
         'tipo',
+        'tipo_operacion',
         'monto',
         'descripcion',
         'sucursal_id',
         'empresa_id',
         'caja_id',
+        'compra_id',
+        'venta_id',
     ];
 
     public function sucursal()

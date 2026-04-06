@@ -81,4 +81,9 @@ public function __construct(RoleService $roleService)
         $this->roleService->eliminarRoles($rol);
         return redirect()->route('admin.roles.index')->with('success', 'Rol eliminado exitosamente.');
     }
+
+    public function asignarPermisos($id)
+    {
+        return view('admin.roles.asignar-permisos');
+    }
 }

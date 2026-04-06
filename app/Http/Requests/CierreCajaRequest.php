@@ -22,19 +22,21 @@ class CierreCajaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fecha_cierre' => 'required|date',
-            'monto_final' => 'required|numeric|min:0',
+            'monto_efectivo' => 'nullable|numeric|min:0',
+            'monto_transferencia' => 'nullable|numeric|min:0',
+            'monto_otros' => 'nullable|numeric|min:0',
         ];
     }
 
     public function messages()
     {
         return [
-            'fecha_cierre.required' => 'La fecha de cierre es obligatoria.',
-            'fecha_cierre.date' => 'La fecha de cierre debe ser una fecha válida.',
-            'monto_final.required' => 'El monto final es obligatorio.',
-            'monto_final.numeric' => 'El monto final debe ser un número.',
-            'monto_final.min' => 'El monto final no puede ser negativo.',
+            'monto_efectivo.numeric' => 'El monto en efectivo debe ser un número.',
+            'monto_efectivo.min' => 'El monto en efectivo no puede ser negativo.',
+            'monto_transferencia.numeric' => 'El monto de transferencia debe ser un número.',
+            'monto_transferencia.min' => 'El monto de transferencia no puede ser negativo.',
+            'monto_otros.numeric' => 'El monto de otros debe ser un número.',
+            'monto_otros.min' => 'El monto de otros no puede ser negativo.',
         ];
     }
 }
