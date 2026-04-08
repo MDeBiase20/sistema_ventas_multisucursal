@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreRoleRequest;
 use App\Services\RoleService;
 use Spatie\Permission\Models\Role;
+use App\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
@@ -84,6 +86,45 @@ public function __construct(RoleService $roleService)
 
     public function asignarPermisos($id)
     {
-        return view('admin.roles.asignar-permisos');
+        $rol = Role::findOrFail($id);
+        
+        /*La función "stripos" agarra algunos caracteres del campo en este caso "name" que sean similiares al prefijo en este caso "usu" */
+        $permisos = Permission::where('empresa_id', Auth::user()->empresa_id)
+                                ->get()
+                                ->groupBy(function($permiso){
+                                    if (stripos($permiso->name, 'config') !==false) {
+                                        return 'Configuración';
+                                    }elseif (stripos($permiso->name, 'rol') !==false ){
+                                        return 'Roles';
+                                    }elseif (stripos($permiso->name, 'permi') !==false ){
+                                        return 'Permisos';
+                                    }elseif (stripos($permiso->name, 'usu') !==false ){
+                                        return 'Usuarios';
+                                    }elseif (stripos($permiso->name, 'suc') !==false ){
+                                        return 'Sucursales';
+                                    }elseif (stripos($permiso->name, 'prod') !==false ){
+                                        return 'Productos';
+                                    }elseif (stripos($permiso->name, 'prov') !==false ){
+                                        return 'Proveedores';
+                                    }elseif (stripos($permiso->name, 'comp') !==false ){
+                                        return 'Compras';
+                                    }elseif (stripos($permiso->name, 'cli') !==false ){
+                                        return 'Clientes';
+                                    }elseif (stripos($permiso->name, 'ven') !==false ){
+                                        return 'Ventas';
+                                    }elseif (stripos($permiso->name, 'caj') !==false ){
+                                        return 'Caja';
+                                    }
+                                });
+
+        return view('admin.roles.asignar-permisos', compact('rol', 'permisos'));
+    }
+
+    public function asignar(Request $request, $id)
+    {
+        $rol = Role::findOrFail($id);
+        $permisos = $request->input('permisos', []);
+        $this->roleService->asignarPermisos($rol, $permisos);
+        return redirect()->route('admin.roles.index')->with('success', 'Permisos asignados exitosamente.');
     }
 }

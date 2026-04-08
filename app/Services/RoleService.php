@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleService
 {
@@ -24,7 +25,7 @@ class RoleService
      */
     private function PrepararRoles(array $data): array
     {
-        
+
         return [
             'empresa_id' => Auth::user()->empresa_id,
             'name' => $data['nombre'],
@@ -49,6 +50,7 @@ class RoleService
     public function mostrarRoles()
     {
         $roles = Role::where('empresa_id', Auth::user()->empresa_id)->get();
+
         return $roles;
     }
 
@@ -70,4 +72,15 @@ class RoleService
         });
     }
 
+    public function asignarPermisos(Role $rol, array $permisos): void
+    {
+        DB::transaction(function () use ($rol, $permisos) {
+
+            $permisosModel = Permission::whereIn('id', $permisos)
+                ->where('empresa_id', Auth::user()->empresa_id)
+                ->get();
+
+            $rol->syncPermissions($permisosModel);
+        });
+    }
 }

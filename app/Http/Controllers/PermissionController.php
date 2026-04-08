@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\PermisoService;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 
 class PermissionController extends Controller
 {
@@ -37,7 +37,7 @@ class PermissionController extends Controller
             $this->permisoService->CrearPermisos($data);
             return redirect()->route('admin.permisos.index')->with('success', 'Permiso creado exitosamente.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error al crear el permiso: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al crear el permiso: El permiso ya se encuentra registrado.');
         }
     }
 
@@ -68,7 +68,7 @@ class PermissionController extends Controller
             $this->permisoService->actualizarPermisos($permission, $data);
             return redirect()->route('admin.permisos.index')->with('success', 'Permiso actualizado exitosamente.');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Error al actualizar el permiso: ' . $th->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar el permiso.');
         }
     }
 
@@ -82,7 +82,7 @@ class PermissionController extends Controller
             $this->permisoService->eliminarPermisos($permiso);
             return redirect()->route('admin.permisos.index')->with('success', 'Permiso eliminado exitosamente.');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Error al eliminar el permiso: ' . $th->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar el permiso.');
         }
     }
 }
