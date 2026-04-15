@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreVentaRequest;
 use App\Http\Requests\UpdateVentaRequest;
+use App\Models\Caja;
 use App\Models\Cliente;
 use App\Models\ProductoSucursal;
 use App\Models\Sucursal;
 use App\Models\TmpVentas;
 use App\Models\Venta;
-use App\Models\Caja;
 use App\Services\VentaService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class VentasController extends Controller
@@ -20,7 +19,8 @@ class VentasController extends Controller
     {
         $this->ventaService = $ventaService;
     }
-
+    
+    //Función privada para obtener la sucursal del usuario logueado
     private function getSucursalId()
     {
         $sucursal_id = session('sucursal_id');
@@ -46,16 +46,16 @@ class VentasController extends Controller
         $sucursal_id = $this->getSucursalId();
 
         $cajaAbierta = Caja::where('sucursal_id', $sucursal_id)
-                        ->where('empresa_id', Auth::user()->empresa_id)
-                        ->where('estado', 'abierta')
-                        ->first();
+            ->where('empresa_id', Auth::user()->empresa_id)
+            ->where('estado', 'abierta')
+            ->first();
 
         $ventas = Venta::where('empresa_id', Auth::user()->empresa_id)
-                    ->where('sucursal_id', $sucursal_id )
-            //->where('estado', 'confirmada')
-                    ->with(['cliente', 'sucursal'])
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+            ->where('sucursal_id', $sucursal_id)
+            // ->where('estado', 'confirmada')
+            ->with(['cliente', 'sucursal'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('admin.ventas.index', compact('ventas', 'cajaAbierta'));
     }
@@ -95,6 +95,7 @@ class VentasController extends Controller
     {
         try {
             $venta = $this->ventaService->CrearVenta($request->validated());
+
             return redirect()->route('admin.ventas.index')->with('success', 'Venta creada exitosamente.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Error al crear la venta: '.$th->getMessage())->withInput();
@@ -107,6 +108,7 @@ class VentasController extends Controller
     public function show(Venta $venta)
     {
         $venta = $this->ventaService->mostrarVenta($venta);
+
         return view('admin.ventas.show', compact('venta'));
     }
 
@@ -141,6 +143,7 @@ class VentasController extends Controller
     {
         try {
             $this->ventaService->ActualizarVenta($venta, $request->validated());
+
             return redirect()->route('admin.ventas.index')->with('success', 'Venta actualizada exitosamente.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Error al actualizar la venta: '.$th->getMessage())->withInput();
@@ -159,9 +162,15 @@ class VentasController extends Controller
     {
         try {
             $this->ventaService->AnularVenta($venta);
+
             return redirect()->route('admin.ventas.index')->with('success', 'Venta anulada exitosamente.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Error al anular la venta: '.$th->getMessage())->withInput();
         }
+    }
+
+    public function pdf(Venta $venta)
+    {
+        return $this->ventaService->generarPdfVenta($venta);
     }
 }

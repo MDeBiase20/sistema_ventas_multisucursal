@@ -144,7 +144,7 @@ class VentaService
     {
         DB::transaction(function () use ($venta) {
 
-            //Verificamos que la venta sea de esa sucursal para evitar problemas de seguridad
+            // Verificamos que la venta sea de esa sucursal para evitar problemas de seguridad
             $sucursal_id = session('sucursal_id');
 
             if (! $sucursal_id) {
@@ -161,8 +161,8 @@ class VentaService
 
             // Obtenemos la caja de la sucursal para registrar el movimiento inverso
             $caja = Caja::where('sucursal_id', $sucursal_id)
-                            ->where('estado', 'abierta')
-                            ->first();
+                ->where('estado', 'abierta')
+                ->first();
 
             if (! $caja) {
                 throw new \Exception('No hay una caja abierta en esta sucursal');
@@ -197,5 +197,10 @@ class VentaService
 
             return $venta;
         });
+    }
+
+    public function generarPdfVenta(Venta $venta)
+    {
+        return app(PdfService::class)->generarVenta($venta);
     }
 }

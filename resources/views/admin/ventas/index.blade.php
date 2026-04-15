@@ -57,6 +57,7 @@
                                                 @if($venta->estado === 'confirmada')
                                                         <a href="{{ route('admin.ventas.show', $venta->id) }}" class="btn btn-sm btn-info">Ver</a>
                                                         <a href="{{ route('admin.ventas.edit', $venta->id) }}" class="btn btn-sm btn-success">Editar</a>
+                                                        <a href="{{ route('admin.ventas.pdf', $venta->id) }}" class="btn btn-sm btn-warning" target="_blank">Imprimir Factura</a>
                                                         <form action="{{ route('admin.ventas.anular', $venta->id) }}" method="POST" style="display:inline;" id="miFormulario{{ $venta->id }}">
                                                             @csrf
                                                             @method('PATCH')

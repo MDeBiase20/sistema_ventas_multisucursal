@@ -87,19 +87,19 @@ Route::put('/clientes/{cliente}', [App\Http\Controllers\ClienteController::class
 Route::delete('/clientes/{id}', [App\Http\Controllers\ClienteController::class, 'destroy'])->name('admin.clientes.destroy')->middleware('auth', 'can:Clientes - destroy');
 
 //Ruta para las cajas
-Route::get('/cajas', [App\Http\Controllers\CajaController::class, 'index'])->name('admin.cajas.index')->middleware('auth' , 'can:Cajas - index');
-Route::get('/cajas/create', [App\Http\Controllers\CajaController::class, 'create'])->name('admin.cajas.create')->middleware('auth', 'can:Cajas - create');
+Route::get('/cajas', [App\Http\Controllers\CajaController::class, 'index'])->name('admin.cajas.index')->middleware('auth' , 'can:Caja - index');
+Route::get('/cajas/create', [App\Http\Controllers\CajaController::class, 'create'])->name('admin.cajas.create')->middleware('auth', 'can:Caja - create');
 Route::post('/cajas/create', [App\Http\Controllers\CajaController::class, 'store'])->name('admin.cajas.store')->middleware('auth');
-Route::get('/cajas/{caja}', [App\Http\Controllers\CajaController::class, 'show'])->name('admin.cajas.show')->middleware('auth' , 'can:Cajas - show');
-Route::get('/cajas/edit/{caja}', [App\Http\Controllers\CajaController::class,'edit'])->name('admin.cajas.edit')->middleware('auth', 'can:Cajas - edit');
+Route::get('/cajas/{caja}', [App\Http\Controllers\CajaController::class, 'show'])->name('admin.cajas.show')->middleware('auth' , 'can:Caja - show');
+Route::get('/cajas/edit/{caja}', [App\Http\Controllers\CajaController::class,'edit'])->name('admin.cajas.edit')->middleware('auth', 'can:Caja - edit');
 Route::put('/cajas/{caja}', [App\Http\Controllers\CajaController::class, 'update'])->name('admin.cajas.update')->middleware('auth');
 //Route::delete('/cajas/{id}', [App\Http\Controllers\CajaController::class, 'destroy'])->name('admin.cajas.destroy')->middleware('auth');
 
-Route::get('/cajas/{caja}/ingresos-egresos', [App\Http\Controllers\MovimientoCajaController::class, 'ingresosEgresos'])->name('admin.cajas.ingresos-egresos')->middleware('auth' , 'can:Cajas - ingresos-egresos');
-Route::post('/cajas/{caja}/movimientos', [App\Http\Controllers\MovimientoCajaController::class, 'movimientos'])->name('admin.cajas.movimientos')->middleware('auth' , 'can:Cajas - movimientos');
+Route::get('/cajas/{caja}/ingresos-egresos', [App\Http\Controllers\MovimientoCajaController::class, 'ingresosEgresos'])->name('admin.cajas.ingresos-egresos')->middleware('auth' , 'can:Caja - ingresos-egresos');
+Route::post('/cajas/{caja}/movimientos', [App\Http\Controllers\MovimientoCajaController::class, 'movimientos'])->name('admin.cajas.movimientos')->middleware('auth' , 'can:Caja - movimientos');
 
 //Ruta para el cierre de caja
-Route::get('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cerrarCaja'])->name('admin.cajas.cerrar')->middleware('auth' , 'can:Cajas - cerrarCaja');
+Route::get('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cerrarCaja'])->name('admin.cajas.cerrar')->middleware('auth' , 'can:Caja - cerrarCaja');
 Route::put('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cierre'])->name('admin.cajas.cierre')->middleware('auth');
 
 //Ruta para las compras temporales
@@ -127,3 +127,4 @@ Route::get('/ventas/{venta}', [App\Http\Controllers\VentasController::class, 'sh
 Route::get('/ventas/edit/{venta}', [App\Http\Controllers\VentasController::class, 'edit'])->name('admin.ventas.edit')->middleware('auth', 'can:Ventas - edit');
 Route::put('/ventas/{venta}', [App\Http\Controllers\VentasController::class, 'update'])->name('admin.ventas.update')->middleware('auth');
 Route::patch('/ventas/{venta}', [App\Http\Controllers\VentasController::class, 'anular'])->name('admin.ventas.anular')->middleware('auth' , 'can:Ventas - anular');
+Route::get('/ventas/{venta}/pdf', [App\Http\Controllers\VentasController::class, 'pdf'])->name('admin.ventas.pdf')->middleware('auth');

@@ -57,7 +57,6 @@ class EmpresaService
             'impuesto' => $data['impuesto'],
             'nombre_impuesto' => $data['nombre_impuesto'],
             'codigo_postal' => $data['codigo_postal'],
-            'logo' => null,
         ];
     }
 
@@ -163,19 +162,23 @@ class EmpresaService
     {
         $logoAntiguo = $empresa->logo;
 
-        //Actualizamos los datos de la empresa (sin logo)
-        $empresa->update($this->prepararDatosEmpresa($data));
+        DB::transaction(function () use ($empresa, $data, $logoAntiguo) {
 
-        // si hay logo nuevo, lo guardamos
-        if (! empty($data['logo'])) {
-            $this->guardarLogo($empresa, $data['logo']);
-        }
+            // actualizar datos generales
+            $empresa->update($this->prepararDatosEmpresa($data));
 
-        // Si se sube un nuevo logo, guardamos el nuevo logo y eliminamos el antiguo
-        if ($logoAntiguo && Storage::disk('public')->exists($logoAntiguo)) {
-            Storage::disk('public')->delete($logoAntiguo);
-        }
+            // SOLO si suben logo nuevo
+            if (! empty($data['logo'])) {
 
-        return $empresa;
+                $this->guardarLogo($empresa, $data['logo']);
+
+                // eliminar logo viejo SOLO después de guardar nuevo
+                if ($logoAntiguo && Storage::disk('public')->exists($logoAntiguo)) {
+                    Storage::disk('public')->delete($logoAntiguo);
+                }
+            }
+        });
+
+        return $empresa->fresh();
     }
 }
