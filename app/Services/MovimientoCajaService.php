@@ -20,13 +20,13 @@ class MovimientoCajaService
                 throw new \Exception('No tiene permiso para operar esta caja.');
             }
 
-            if ($caja->fecha_cierre) {
+            if ($caja->estado === 'cerrada') {
                 throw new \Exception('La caja ya está cerrada.');
             }
 
             return MovimientoCaja::create([
                 'tipo' => $data['tipo_movimiento'],
-                'tipo_operacion' =>'S/N',
+                'tipo_operacion' => 'manual',
                 'monto' => $data['monto'],
                 'descripcion' => $data['descripcion'],
                 'sucursal_id' => $caja->sucursal_id,
@@ -40,6 +40,13 @@ class MovimientoCajaService
     {
         return MovimientoCaja::where('caja_id', $caja->id)
             ->where('tipo', 'ingreso')
+            ->whereIn('tipo_operacion', ['venta', 'manual'])
+            ->where(function ($query) {
+                $query->whereNull('venta_id') // manual
+                    ->orWhereHas('venta', function ($q) {
+                        $q->where('estado', '!=', 'anulada');
+                    });
+            })
             ->get();
     }
 
@@ -47,6 +54,13 @@ class MovimientoCajaService
     {
         return MovimientoCaja::where('caja_id', $caja->id)
             ->where('tipo', 'egreso')
+            ->whereIn('tipo_operacion', ['compra', 'manual'])
+            ->where(function ($query) {
+                $query->whereNull('compra_id') // manual
+                    ->orWhereHas('compra', function ($q) {
+                        $q->where('estado', '!=', 'anulada');
+                    });
+            })
             ->get();
     }
 }

@@ -12,18 +12,27 @@ class CajaService
     /**
      * Preparar datos para la caja
      */
-    private function getCajaAbierta()
+    public function obtenerCajaAbierta(): Caja
     {
-        $caja = Caja::where('usuario_id', Auth::id())
-            ->where('estado', 'abierta')
-            ->lockForUpdate()
-            ->first();
+        $sucursal_id = session('sucursal_id');
 
-        if (! $caja) {
-            throw new \Exception('No hay una caja abierta');
+        if (! $sucursal_id) {
+            throw new \Exception('No hay sucursal activa');
         }
 
-        return $caja;
+        $cantidad = Caja::where('sucursal_id', $sucursal_id)
+            ->where('estado', 'abierta')
+            ->count();
+
+        if ($cantidad > 1) {
+            throw new \Exception('Hay múltiples cajas abiertas. Inconsistencia crítica.');
+        }
+
+        return Caja::where('sucursal_id', $sucursal_id)
+            ->where('empresa_id', Auth::user()->empresa_id)
+            ->where('estado', 'abierta')
+            ->lockForUpdate()
+            ->firstOrFail();
     }
 
     private function getSucursalId()
@@ -41,7 +50,7 @@ class CajaService
 
             $sucursal_id = $sucursal->id;
 
-            // 🔥 IMPORTANTE: guardar en sesión
+            // IMPORTANTE: guardar en sesión
             session(['sucursal_id' => $sucursal_id]);
         }
 
@@ -52,7 +61,7 @@ class CajaService
     {
         $sucursal_id = $this->getSucursalId();
 
-        //Evitar múltiples cajas abiertas
+        // Evitar múltiples cajas abiertas
         $existeCajaAbierta = Caja::where('usuario_id', Auth::id())
             ->where('estado', 'abierta')
             ->exists();
@@ -106,28 +115,28 @@ class CajaService
                 throw new \Exception('La caja ya está cerrada');
             }
 
-            // 🔹 Calcular ingresos
             $ingresos = MovimientoCaja::where('caja_id', $caja->id)
                 ->where('tipo', 'ingreso')
-                ->where('tipo_operacion', 'venta')
                 ->sum('monto');
 
-            // 🔹 Calcular egresos
             $egresos = MovimientoCaja::where('caja_id', $caja->id)
                 ->where('tipo', 'egreso')
-                ->where('tipo_operacion', 'compra')
                 ->sum('monto');
 
-            // 🔹 Calcular teórico
             $teorico = $caja->monto_inicial + $ingresos - $egresos;
 
-            // 🔹 Calcular real
             $real = ($data['monto_efectivo'] ?? 0)
-                + ($data['monto_transferencia'] ?? 0)
-                + ($data['monto_otros'] ?? 0);
+            + ($data['monto_transferencia'] ?? 0)
+            + ($data['monto_otros'] ?? 0);
 
-            // 🔹 Diferencia
             $diferencia = $real - $teorico;
+
+            //             dd([
+            //     'monto_inicial' => $caja->monto_inicial,
+            //     'ingresos' => $ingresos,
+            //     'egresos' => $egresos,
+            //     'teorico' => $teorico,
+            // ]);
 
             // 🔹 Actualizar caja
             $caja->update([
@@ -145,14 +154,38 @@ class CajaService
         });
     }
 
-    public function obtenerIngresosEgresos(Caja $caja)
+    public function obtenerIngresosPorCaja(Caja $caja)
     {
-        $ingresos = $caja->ingresos()->get();
-        $egresos = $caja->egresos()->get();
 
-        return [
-            'ingresos' => $ingresos,
-            'egresos' => $egresos,
-        ];
+        return MovimientoCaja::where('caja_id', $caja->id)
+            ->where('tipo', 'ingreso')
+            ->where('tipo_operacion', 'venta') // 🔴 CLAVE
+            ->get();
     }
+
+    public function obtenerEgresosPorCaja(Caja $caja)
+    {
+        return MovimientoCaja::where('caja_id', $caja->id)
+            ->where('tipo', 'egreso')
+            ->where('tipo_operacion', 'compra') // 🔴 CLAVE
+            ->get();
+    }
+
+    public function obtenerAnulaciones(Caja $caja)
+    {
+        return MovimientoCaja::where('caja_id', $caja->id)
+            ->whereIn('tipo_operacion', ['anulación_venta', 'anulación_compra'])
+            ->get();
+    }
+
+    // public function obtenerIngresosEgresos(Caja $caja)
+    // {
+    //     $ingresos = $caja->ingresos()->get();
+    //     $egresos = $caja->egresos()->get();
+
+    //     return [
+    //         'ingresos' => $ingresos,
+    //         'egresos' => $egresos,
+    //     ];
+    // }
 }

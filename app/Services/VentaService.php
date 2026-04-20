@@ -14,9 +14,18 @@ use Illuminate\Support\Facades\DB;
 
 class VentaService
 {
-    public function __construct(DetalleVentaService $detalleVentaService)
+    public function __construct(DetalleVentaService $detalleVentaService, CajaService $cajaService)
     {
         $this->detalleVentaService = $detalleVentaService;
+        $this->cajaService = $cajaService;
+    }
+
+    public function obtenerCajaAbierta(): Caja
+    {
+        return Caja::where('sucursal_id', session('sucursal_id'))
+            ->where('empresa_id', auth()->user()->empresa_id)
+            ->where('estado', 'abierta')
+            ->firstOrFail();
     }
 
     public function CrearVenta(array $data)
@@ -49,8 +58,7 @@ class VentaService
             $numeroVentaFormateado = str_pad($sucursal_id, 4, '0', STR_PAD_LEFT).'-'.
                                     str_pad($nuevoNumero, 8, '0', STR_PAD_LEFT);
 
-            $caja = Caja::where('sucursal_id', $sucursal_id)
-                ->first();
+            $caja = $this->cajaService->obtenerCajaAbierta();
 
             if (! $caja) {
                 throw new \Exception('No hay una caja abierta en esta sucursal');
@@ -160,9 +168,7 @@ class VentaService
             $venta->load('detalles');
 
             // Obtenemos la caja de la sucursal para registrar el movimiento inverso
-            $caja = Caja::where('sucursal_id', $sucursal_id)
-                ->where('estado', 'abierta')
-                ->first();
+            $caja = $this->cajaService->obtenerCajaAbierta();
 
             if (! $caja) {
                 throw new \Exception('No hay una caja abierta en esta sucursal');

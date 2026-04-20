@@ -32,4 +32,14 @@ class MovimientoCaja extends Model
     {
         return $this->belongsTo(Caja::class);
     }
+
+    public function compra()
+    {
+        return $this->belongsTo(Compra::class);
+    }
+
+    public function venta()
+    {
+        return $this->belongsTo(Venta::class);
+    }
 }

@@ -99,8 +99,7 @@
                                                 <label for="">Monto Teórico</label>
                                                 <div class="form-group position-relative has-icon-left">
                                                     <input type="text" class="form-control" id="monto_teorico"
-                                                        value="{{ $monto_teorico }}"
-                                                        name="monto_teorico" readonly>
+                                                        value="{{ $monto_teorico }}" name="monto_teorico" readonly>
                                                     @error('monto_teorico')
                                                         <small style="color: red">{{ $message }}</small>
                                                     @enderror
@@ -195,6 +194,15 @@
                                             </div>
                                         </div>
 
+                                        <div class="row">
+                                            <div class="mt-3">
+                                                <label>Estado de caja</label>
+                                                <div id="estado_caja" class="alert text-center fw-bold">
+                                                    -
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <hr>
 
                                         <div class="row">
@@ -229,11 +237,35 @@
 
             document.getElementById('total_real').value = totalReal.toFixed(2);
             document.getElementById('diferencia').value = diferencia.toFixed(2);
+
+            // 🔥 INDICADOR VISUAL
+            let estadoCaja = document.getElementById('estado_caja');
+
+            // tolerancia configurable
+            let tolerancia = 100; // podés ajustar
+
+            estadoCaja.classList.remove('alert-success', 'alert-danger', 'alert-warning');
+
+            if (Math.abs(diferencia) <= tolerancia) {
+                estadoCaja.classList.add('alert-success');
+                estadoCaja.innerText = '✔ Caja equilibrada';
+            } else if (diferencia > 0) {
+                estadoCaja.classList.add('alert-warning');
+                estadoCaja.innerText = '⚠ Sobrante de ' + diferencia.toFixed(2);
+            } else {
+                estadoCaja.classList.add('alert-danger');
+                estadoCaja.innerText = '✖ Faltante de ' + Math.abs(diferencia).toFixed(2);
+            }
+
         }
 
         // listeners
         document.getElementById('monto_efectivo').addEventListener('input', calcularCaja);
         document.getElementById('monto_transferencia').addEventListener('input', calcularCaja);
         document.getElementById('monto_otros').addEventListener('input', calcularCaja);
+
+        // ejecutar al cargar (clave)
+        window.addEventListener('load', calcularCaja);
+        
     </script>
 @endsection

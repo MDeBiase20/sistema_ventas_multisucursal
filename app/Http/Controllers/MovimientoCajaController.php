@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMovimientoCajaRequest;
+use App\Models\Caja;
+use App\Models\Sucursal;
 use App\Services\MovimientoCajaService;
 use Illuminate\Http\Request;
-use App\Models\Sucursal;
-use App\Models\MovimientoCaja;
-use App\Models\Caja;
-use App\Http\Requests\StoreMovimientoCajaRequest;
 
 class MovimientoCajaController extends Controller
 {
@@ -20,6 +19,7 @@ class MovimientoCajaController extends Controller
     {
         $caja = Caja::where('empresa_id', auth()->user()->empresa_id)->first();
         $sucursales = Sucursal::where('empresa_id', auth()->user()->empresa_id)->get();
+
         return view('admin.cajas.ingreso-egreso', compact('caja', 'sucursales'));
     }
 
@@ -37,7 +37,15 @@ class MovimientoCajaController extends Controller
     public function movimientos(StoreMovimientoCajaRequest $request, Caja $caja)
     {
         try {
+            $sucursal_id = session('sucursal_id');
+
+            $caja = Caja::where('sucursal_id', $sucursal_id)
+                ->where('empresa_id', auth()->user()->empresa_id)
+                ->where('estado', 'abierta')
+                ->firstOrFail();
+
             $movimiento = $this->movimientoCajaService->CrearIngresoEgreso($request->validated(), $caja);
+
             return redirect()->route('admin.cajas.index')->with('success', 'Movimiento registrado exitosamente.');
         } catch (\Throwable $th) {
 

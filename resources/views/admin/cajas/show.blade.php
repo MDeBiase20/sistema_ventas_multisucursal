@@ -137,7 +137,8 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <table class="table table-striped table-bordered table-hover table-sm table-success">
+                                        <table
+                                            class="table table-striped table-bordered table-hover table-sm table-success">
                                             <thead>
                                                 <tr style="text-align: center">
                                                     <th>#</th>
@@ -223,7 +224,60 @@
 
             </div>
         </div>
-        
+
     </div>
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Anulaciones</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table
+                                            class="table table-striped table-bordered table-hover table-sm table-danger">
+                                            <thead>
+                                                <tr style="text-align: center">
+                                                    <th>#</th>
+                                                    <th>Monto</th>
+                                                    <th>Descripción</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php $contador_anulacion_ventas = 1; ?>
+                                                @foreach ($anulaciones as $anulacion)
+                                                    <tr style="text-align: center">
+                                                        <td>{{ $contador_anulacion_ventas++ }}</td>
+                                                        <td>{{ $anulacion->monto }}</td>
+                                                        <td>{{ $anulacion->descripcion }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <tfoot>
+                                                <tr style="text-align: center">
+                                                    <th colspan="1">Total Anulaciones</th>
+                                                    <th colspan="1">{{ $anulaciones->sum('monto') }}</th>
+                                                    <th colspan="0"></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 @endsection

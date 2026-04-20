@@ -8,6 +8,7 @@
                 <div class="card-header">
                     <h4 class="card-title">Movimiento de Caja</h4>
                 </div>
+                
                 <div class="card-body">
                     <form action="{{ route('admin.cajas.movimientos', $caja) }}" method="post">
                         @csrf
@@ -20,7 +21,7 @@
                                                 <label for="">Tipo de movimiento</label>
                                                 <div class="form-group position-relative has-icon-left">
                                                     <select class="form-control select2" name="tipo_movimiento">
-                                                        <option value="" enabled>Seleccionar Tipo</option>
+                                                        <option value="" disabled selected>Seleccionar Tipo</option>
                                                         <option value="ingreso">Ingreso</option>
                                                         <option value="egreso">Egreso</option>
                                                     </select>

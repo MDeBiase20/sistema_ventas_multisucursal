@@ -84,9 +84,10 @@ class CajaController extends Controller
         $caja = $this->cajaService->mostrarCaja($caja);
         $ingresos = $this->movimientoCajaService->obtenerIngresosPorCaja($caja);
         $egresos = $this->movimientoCajaService->obtenerEgresosPorCaja($caja);
+        $anulaciones = $this->cajaService->obtenerAnulaciones($caja);
         $sucursales = Sucursal::where('empresa_id', auth()->user()->empresa_id)->get();
 
-        return view('admin.cajas.show', compact('caja', 'ingresos', 'egresos', 'sucursales'));
+        return view('admin.cajas.show', compact('caja', 'ingresos', 'egresos', 'anulaciones', 'sucursales'));
     }
 
     /**
@@ -133,12 +134,10 @@ class CajaController extends Controller
     {
         $ingresos = MovimientoCaja::where('caja_id', $caja->id)
             ->where('tipo', 'ingreso')
-            ->where('tipo_operacion', 'venta')
             ->sum('monto');
 
         $egresos = MovimientoCaja::where('caja_id', $caja->id)
             ->where('tipo', 'egreso')
-            ->where('tipo_operacion', 'compra')
             ->sum('monto');
 
         $monto_teorico = $caja->monto_inicial + $ingresos - $egresos;
@@ -161,7 +160,7 @@ class CajaController extends Controller
         }
     }
 
-    public function ingresosEgresos(Caja $caja)
+    public function ingresosEgresos(Caja $caja) 
     {
         $caja = $this->cajaService->mostrarCaja($caja);
 

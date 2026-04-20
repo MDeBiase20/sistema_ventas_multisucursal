@@ -69,13 +69,13 @@ Route::delete('/proveedores/{id}', [App\Http\Controllers\ProveedorController::cl
 Route::get('/productos', [App\Http\Controllers\ProductoController::class, 'index'])->name('admin.productos.index')->middleware('auth' , 'can:Productos - index');
 Route::get('/productos/create', [App\Http\Controllers\ProductoController::class, 'create'])->name('admin.productos.create')->middleware('auth', 'can:Productos - create');
 Route::post('/productos/create', [App\Http\Controllers\ProductoController::class, 'store'])->name('admin.productos.store')->middleware('auth');
-Route::get('/productos/{producto}', [App\Http\Controllers\ProductoController::class, 'show'])->name('admin.productos.show')->middleware('auth');
+Route::get('/productos/{producto}', [App\Http\Controllers\ProductoController::class, 'show'])->name('admin.productos.show')->middleware('auth', 'can:Productos - show');
 Route::get('/productos/edit/{producto}', [App\Http\Controllers\ProductoController::class, 'edit'])->name('admin.productos.edit')->middleware('auth', 'can:Productos - edit');
 Route::put('/productos/{producto}', [App\Http\Controllers\ProductoController::class, 'update'])->name('admin.productos.update')->middleware('auth');
 Route::delete('/productos/{id}', [App\Http\Controllers\ProductoController::class, 'destroy'])->name('admin.productos.destroy')->middleware('auth', 'can:Productos - destroy');
 
 //Rutas para los productos por sucursal
-Route::get('/productos-sucursal', [App\Http\Controllers\ProductoSucursalController::class, 'index'])->name('admin.productos_sucursales.index')->middleware('auth' , 'can:ProductosSucursales - index');
+Route::get('/productos-sucursal', [App\Http\Controllers\ProductoSucursalController::class, 'index'])->name('admin.productos_sucursales.index')->middleware('auth' , 'can:ProductosPorSucursales - index');
 
 //Ruta para los clientes
 Route::get('/clientes', [App\Http\Controllers\ClienteController::class, 'index'])->name('admin.clientes.index')->middleware('auth' , 'can:Clientes - index');
@@ -99,7 +99,7 @@ Route::get('/cajas/{caja}/ingresos-egresos', [App\Http\Controllers\MovimientoCaj
 Route::post('/cajas/{caja}/movimientos', [App\Http\Controllers\MovimientoCajaController::class, 'movimientos'])->name('admin.cajas.movimientos')->middleware('auth' , 'can:Caja - movimientos');
 
 //Ruta para el cierre de caja
-Route::get('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cerrarCaja'])->name('admin.cajas.cerrar')->middleware('auth' , 'can:Caja - cerrarCaja');
+Route::get('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cerrarCaja'])->name('admin.cajas.cerrar')->middleware('auth' , 'can:Caja - CerrarCaja');
 Route::put('/cajas/{caja}/cierre', [App\Http\Controllers\CajaController::class, 'cierre'])->name('admin.cajas.cierre')->middleware('auth');
 
 //Ruta para las compras temporales

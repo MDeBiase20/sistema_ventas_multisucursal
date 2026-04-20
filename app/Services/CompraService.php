@@ -14,9 +14,10 @@ use Illuminate\Support\Facades\DB;
 
 class CompraService
 {
-    public function __construct(DetalleCompraService $detalleCompraService)
+    public function __construct(DetalleCompraService $detalleCompraService, CajaService $cajaService)
     {
         $this->detalleCompraService = $detalleCompraService;
+        $this->cajaService = $cajaService;
     }
 
     public function CrearCompra(array $data)
@@ -38,8 +39,7 @@ class CompraService
             // 🔒 BLOQUEAR la sucursal para evitar duplicados
             $sucursal = Sucursal::where('id', $sucursal_id)->lockForUpdate()->first();
 
-            $caja = Caja::where('sucursal_id', $sucursal_id)
-                        ->first();
+            $caja = $this->cajaService->obtenerCajaAbierta();
 
             if (!$caja) {
                 throw new \Exception('No hay una caja abierta en esta sucursal');
@@ -130,8 +130,7 @@ class CompraService
             }
 
             // Obtenemos la caja de la sucursal para registrar el movimiento inverso
-            $caja = Caja::where('sucursal_id', $sucursal_id)
-                ->first();
+            $caja = $this->cajaService->obtenerCajaAbierta();
 
             if (! $caja) {
                 throw new \Exception('No hay una caja abierta en esta sucursal');

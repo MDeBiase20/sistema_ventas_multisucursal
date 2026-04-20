@@ -20,7 +20,7 @@ class Caja extends Model
         'fecha_cierre',
         'sucursal_id',
         'empresa_id',
-        'usuario_id'
+        'usuario_id',
     ];
 
     public function sucursal()
@@ -35,6 +35,18 @@ class Caja extends Model
 
     public function movimientos()
     {
-        return $this->hasMany(movimiento_caja::class);
+        return $this->hasMany(MovimientoCaja::class);
+    }
+
+    public function anulacionesVentas()
+    {
+        return $this->hasMany(MovimientoCaja::class)
+            ->where('tipo_operacion', 'anulación_venta');
+    }
+
+    public function anulacionesCompras()
+    {
+        return $this->hasMany(MovimientoCaja::class)
+            ->where('tipo_operacion', 'anulación_compra');
     }
 }
